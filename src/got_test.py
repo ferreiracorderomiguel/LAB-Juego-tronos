@@ -13,8 +13,15 @@ def test_reyes_mayor_menor_ejercito(reyes):
 def test_batallas_mas_comandantes(batallas):
     print(f"\n3. test_batallas_mas_comandantes:\n{batallas}")
 
+def test_rey_mas_victorias(rey, rol):
+    print("4. test_rey_mas_victorias")
+    rol = "" if rol == "ambos" else rol
+    print(f"El rey {rol} con mas victorias es: {rey}")
+
+
 if __name__ == "__main__":
     batallas = lee_batallas("data/battles.csv")
     # test_lee_batallas(batallas)
     # test_reyes_mayor_menor_ejercito(reyes_mayor_menor_ejercito(batallas))
-    test_batallas_mas_comandantes(batallas_mas_comandantes(batallas, {'The North', 'The Riverlands'}, 4))
+    # test_batallas_mas_comandantes(batallas_mas_comandantes(batallas, {'The North', 'The Riverlands'}, 4))
+    test_rey_mas_victorias(rey_mas_victorias(batallas), "ambos")

@@ -61,7 +61,7 @@ def reyes_mayor_menor_ejercito(batallas: List[BatallaGOT]) -> Tuple[str, str]:
     
     return (rey_mayor_ejercito, rey_menor_ejercito)
 
-def batallas_mas_comandantes(batallas: List[BatallaGOT], regiones: Set[str]= None, n:int=None) -> Tuple[str, int]:
+def batallas_mas_comandantes(batallas: List[BatallaGOT], regiones: Set[str]= None, n:int=None) -> List[Tuple[str, int]]:
     '''
     Recibe una lista de tuplas de tipo BatallaGOT, un conjunto de cadenas regiones,
     con valor por defecto None, y un valor entero n con valor por defecto None, y
@@ -81,4 +81,38 @@ def batallas_mas_comandantes(batallas: List[BatallaGOT], regiones: Set[str]= Non
             batallas_dict[batalla.nombre] += len(batalla.comandantes_atacados)
 
     batallas_ordenadas = sorted(batallas_dict.items(), key=lambda item:item[1], reverse=True)
-    return batallas_ordenadas if n is None else batallas_ordenadas[:n] 
+    return batallas_ordenadas if n is None else batallas_ordenadas[:n]
+
+def rey_mas_victorias(batallas: List[BatallaGOT], rol:str="ambos") -> Tuple[str, int]:
+    '''
+    Recibe una lista de tuplas de tipo BatallaGOT y una cadena rol, con valor por
+    defecto "ambos", y devuelve una tuplas con el nombre del rey que acumula mas
+    victorias y el número de victorias conseguidas. Tenga en cuenta que un rey puede
+    ganar una batalla en la que actúa como atacante, en cuyo caso el campo
+    gana_atacante será True, o una batalla en la que actúa como atacado, en cuyo caso
+    el campo gana_atacante será False. Si el parámetro rol es igual a "atacante", se
+    devolverá el nombre del rey que acumula más victorias como atacante; si rol es
+    igual a "atacado", se devolverá el nombre del rey que acumula más victorias como
+    atacado; si rol es igual a "ambos", se devolveré el nombre del rey que acumula
+    más victorias en todas las batallas en las que ha participado (sumando sus
+    victorias como atacante y como atacado). Si ningún rey acumula victorias del rol
+    especificado en la lista de batallas recibida, la función devuelve None. (2,75 puntos)
+    '''
+    reyes_dict = defaultdict(int)
+
+    for batalla in batallas:
+        if rol == "ambos":
+            if batalla.gana_atacante:
+                reyes_dict[batalla.rey_atacante] += 1
+            else:
+                reyes_dict[batalla.rey_atacado] += 1
+        elif rol == "atacante":
+            if batalla.gana_atacante:
+                reyes_dict[batalla.rey_atacante] += 1
+        elif rol == "atacado":
+            if not batalla.gana_atacante:
+                reyes_dict[batalla.rey_atacado] += 1
+
+    rey_con_mas_victorias = max(reyes_dict.items(), key = lambda item:item[1])
+
+    return rey_con_mas_victorias
