@@ -1,6 +1,6 @@
 from collections import defaultdict
 import csv
-from typing import List, NamedTuple, Optional, Set, Tuple
+from typing import Dict, List, NamedTuple, Optional, Set, Tuple
 from parsers import *
 
 
@@ -116,3 +116,26 @@ def rey_mas_victorias(batallas: List[BatallaGOT], rol:str="ambos") -> Tuple[str,
     rey_con_mas_victorias = max(reyes_dict.items(), key = lambda item:item[1])
 
     return rey_con_mas_victorias
+
+def rey_mas_victorias_por_region(batallas: List[BatallaGOT], rol:str="ambos") -> Dict[str, str]:
+    '''
+    Recibe una lista de tuplas de tipo BatallaGOT y una cadena rol, con valor por defecto
+    "ambos", y devuelve un diccionario que relaciona cada región con el nombre del rey o
+    reyes que acumula más victorias en batallas ocurridas en esa región. El parámetro rol
+    tiene el mismo significado que en la función anterior. Si para alguna región no hay
+    ningún rey que haya ganado una batalla con el rol especificado, en el diccionario
+    aparecerá el valor None asociado a dicha región. Puede usar la función
+    rey_mas_victorias para resolver este ejercicio, pero recuerde que esta función puede
+    devolver None en lugar de una tupla en la que estaría el que busca. (2 puntos)
+    '''
+    batallas_por_region = defaultdict(list)
+    victorias_por_region = defaultdict(str)
+
+    for batalla in batallas:
+        batallas_por_region[batalla.region].append(batalla)
+    
+    for region, batallas in batallas_por_region.items():
+        ganador = rey_mas_victorias(batallas)[0]
+        victorias_por_region[region] = ganador
+
+    return victorias_por_region
