@@ -1,6 +1,6 @@
 from collections import defaultdict
 import csv
-from typing import List, NamedTuple, Optional, Tuple
+from typing import List, NamedTuple, Optional, Set, Tuple
 from parsers import *
 
 
@@ -58,6 +58,27 @@ def reyes_mayor_menor_ejercito(batallas: List[BatallaGOT]) -> Tuple[str, str]:
 
     rey_mayor_ejercito = max(batallas_reyes, key = batallas_reyes.get)
     rey_menor_ejercito = min(batallas_reyes, key = batallas_reyes.get)
-
     
     return (rey_mayor_ejercito, rey_menor_ejercito)
+
+def batallas_mas_comandantes(batallas: List[BatallaGOT], regiones: Set[str]= None, n:int=None) -> Tuple[str, int]:
+    '''
+    Recibe una lista de tuplas de tipo BatallaGOT, un conjunto de cadenas regiones,
+    con valor por defecto None, y un valor entero n con valor por defecto None, y
+    devuelve una lista de tuplas (str, int) con los nombres y el total de comandantes
+    participantes de aquellas n batallas con mayor número de comandantes participantes
+    (tanto atacantes como atacados), llevadas a cabo en alguna de las regiones
+    indicadas en el parámetro regiones. Si el parámetro regiones es None se
+    considerarán todas las regiones; por su parte, si el parámetro n es None se
+    devolverán las tuplas correspondientes a todas las batallas de las regiones
+    escogidas. En todos los casos, la lista devuelta estará ordenada de mayor a menor
+    número de comandantes. (2 puntos)
+    '''
+    batallas_dict = defaultdict(int)
+    for batalla in batallas:
+        if regiones is None or batalla.region in regiones:
+            batallas_dict[batalla.nombre] += len(batalla.comandantes_atacantes)
+            batallas_dict[batalla.nombre] += len(batalla.comandantes_atacados)
+
+    batallas_ordenadas = sorted(batallas_dict.items(), key=lambda item:item[1], reverse=True)
+    return batallas_ordenadas if n is None else batallas_ordenadas[:n] 
